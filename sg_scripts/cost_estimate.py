@@ -21,7 +21,7 @@ os.environ["AWS_SESSION_TOKEN"] = assumed_role_object.credentials.session_token
 
 MYSQL_USER="root"
 MYSQL_PASS="pass123"
-MYSQL_DB="HI_BILLING"
+MYSQL_DB="DB_NAME"
 
 ############ Get Account name & ID #############################################
 accountname=commands.getoutput("aws iam list-account-aliases | awk {'print $2'}")

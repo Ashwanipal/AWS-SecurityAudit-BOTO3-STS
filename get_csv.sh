@@ -1,11 +1,11 @@
 #!/bin/bash
 
-filename="921628772373-aws-billing-detailed-line-items-with-resources-and-tags-`date +%Y-%m`.csv"
-loc='/home/hashedin/AWS_SECURITY_AUDIT/daily_bill'
-old_file='hiawsca_orig.csv'
-new_file='hiawsca.csv'
-s3_loc='s3://hi-aws-billing'
-script_loc='/home/hashedin/AWS_SECURITY_AUDIT'
+filename="S3-billing-CSV-name.csv"
+loc='/home/some_DIR/AWS_SECURITY_AUDIT/daily_bill'
+old_file='old.csv'
+new_file='new.csv'
+s3_loc='s3://your-bucket-name/'
+script_loc='/home/som-DIR/AWS_SECURITY_AUDIT'
 
 cd $loc
 #rm -f `date +%d%m%y`.csv

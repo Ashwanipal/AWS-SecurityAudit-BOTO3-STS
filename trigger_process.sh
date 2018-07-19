@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "<html><body><p>This is an automated notification email for HashedIn AWS consolidated daily audit report for Cost and Security.</p>" >/tmp/email_output.html
-script_loc='/home/hashedin/AWS_SECURITY_AUDIT'
+echo "<html><body><p>This is an automated notification email for AWS consolidated daily audit report for Cost and Security.</p>" >/tmp/email_output.html
+script_loc='/home/Some_DIR/AWS_SECURITY_AUDIT'
 
 ###### Downloding the CSV file from S3 #######
 bash $script_loc/get_csv.sh
