@@ -14,7 +14,7 @@ for arn in arns1:
         a=commands.getoutput("sudo python /home/some_DIR/AWS_SECURITY_AUDIT/sg_scripts/cost_estimate.py  "+arn)
         print arn
 
-total_cost=commands.getoutput("mysql -u root -ppass123 HI_BILLING -e 'select SUM(ca_Cost) as Cost from hiaws_ca;' | sed -n '1!p'")
+total_cost=commands.getoutput("mysql -u root -ppass123 DB_NAME -e 'select SUM(ca_Cost) as Cost from table_name;' | sed -n '1!p'")
 f1=open('/tmp/email_output.html', 'a')
 f1.write("<tr><td>-</td><td><b>Consolidated Total Bill</b></td><td><b>"+total_cost+" $</b></td></tr>")
 f1.write("</tbody></table></br><h1>Security Summary</h1><hr>")
