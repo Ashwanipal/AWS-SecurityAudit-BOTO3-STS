@@ -1,0 +1,40 @@
+#!/bin/sh
+
+######### Cradentials ################################
+MUSQL_USER="root"
+MYSQL_PASS="pass123"
+MYSQL_DB="HI_BILLING"
+
+########## Refreshing Database #######################
+mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB -e 'truncate hiaws_ca;'
+mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB --local-infile < /home/hashedin/AWS_SECURITY_AUDIT/load-data
+#mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB -e 'select count(*) from hiaws_ca;'
+sudo rm -rf /tmp/*.csv
+
+######### cost estimation ##########
+echo "<html><body>" >/tmp/email_output.html
+echo "<div style='width:90%;'><hr><h3>AWS cost Estimation</h3>" >>/tmp/email_output.html
+echo "<table style='width:98%', border='1'><thead><th>AWS-ACCOUNT_ID</th><th>-</th></thead><tbody>" >>/tmp/email_output.html
+
+ACID=$(mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB -e "SELECT ca_LinkedAccountId FROM hiaws_ca GROUP BY ca_LinkedAccountId;" | sed -n '1!p')
+
+for ID in $ACID
+do
+        dates=$(mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB -e "select date_format(ca_UsageEndDate,'%Y-%m-%d') from hiaws_ca group by date_format(ca_UsageEndDate,'%Y-%m-%d')" | sed -n '1!p')
+	echo "<tr><td><b>$ID</b></td><td><table style='width:100%', border='1'><thead><th>DATE</th><th>COST in US$</th></thead>" >>/tmp/email_output.html
+        for date in $dates
+        do
+                Cost=$(mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB -e "select SUM(ca_Cost) from hiaws_ca where ca_LinkedAccountId = "$ID" AND date_format(ca_UsageEndDate,'%Y-%m-%d') = '"$date"';" | sed -n '1!p')
+                echo "<tr><td style='width:50%'>$date</td><td>$Cost</td></tr>" >>/tmp/email_output.html
+        done
+	echo "</table></td></tr>" >>/tmp/email_output.html
+done
+total_cost=$(mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB -e 'select SUM(ca_Cost) as Cost from hiaws_ca;' | sed -n '1!p')
+echo "<tr><td><b>TOTAL COST</b></td><td><b>$total_cost</b></td></tr></tbody></table>">>/tmp/email_output.html
+
+
+echo "</div>" >>/tmp/email_output.html
+#echo "</body></html>" >>/tmp/email_output.html
+
+######## Creating CSV files Attachments #######################
+mysql -u $MUSQL_USER -p$MYSQL_PASS $MYSQL_DB < /home/hashedin/AWS_SECURITY_AUDIT/all-csv.sql
